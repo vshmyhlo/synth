@@ -1,6 +1,8 @@
 use cpal::traits::{DeviceTrait, HostTrait, StreamTrait};
 use cpal::StreamConfig;
+use dioxus::{html::input_data::keyboard_types::Key, prelude::*};
 // use dasp::signal;
+use dasp_sample::{Sample, I24};
 use dasp_signal::{self as signal, Signal};
 
 use std::thread::sleep;
@@ -26,9 +28,12 @@ fn main() {
     let config: StreamConfig = supported_config.into();
 
     let mut s = signal::rate(config.sample_rate.0.into())
+        // .const_hz(220. / 10.)
+        // .hz(signal::gen(|| 220.))
         .const_hz(220.)
         .sine()
-        .scale_amp(0.1);
+        .scale_amp(0.1)
+        .clip_amp(0.02);
 
     let stream = device
         .build_output_stream(
@@ -41,7 +46,7 @@ fn main() {
 
                 // *data =
                 for x in data.iter_mut() {
-                    *x = s.next() as f32;
+                    *x = s.next().to_sample::<f32>();
                 }
 
                 // react to stream events and read or write stream data here.
@@ -61,5 +66,18 @@ fn main() {
     //     println!("{}", x);
     // }
 
-    sleep(Duration::from_secs(3));
+    // sleep(Duration::from_secs(3));
+
+    // di::launch(app);
+    dioxus_desktop::launch(app)
+}
+
+fn app(cx: Scope) -> Element {
+    let mut count = use_state(cx, || 0);
+
+    cx.render(rsx! {
+        h1 { "High-Five counter: {count}" }
+        button { onclick: move |_| count += 1, "Up high!" }
+        button { onclick: move |_| count -= 1, "Down low!" }
+    })
 }
