@@ -3,10 +3,17 @@ name = "synth"
 version = "0.1.0"
 edition = "2021"
 
+[[bin]]
+name = "main"
+path = "src/main.rs"
 
 [[bin]]
 name = "pg"
 path = "src/pg.rs"
+
+[[bin]]
+name = "ui"
+path = "src/ui.rs"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -31,3 +38,7 @@ log = "0.4.14"
 console_error_panic_hook = "*"
 im-rc = "15.0.0"
 dioxus-desktop = "0.3.0"
+cocoa = "0.25.0"
+cacao = "0.3.2"
+ratatui = { version = "0.22.0", features = ["all-widgets"] }
+crossterm = "0.26.1"
